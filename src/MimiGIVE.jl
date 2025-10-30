@@ -42,6 +42,10 @@ include("components/cromar_mortality_damages.jl")
 include("components/dice2016R2_damages.jl")
 include("components/howard_sterner_damages.jl")
 
+# Local temperature components
+include("components/TempMortality_PatternScaling.jl")
+include("components/TempMortality_GreensFunction.jl")
+
 # Primary API
 include("main_model.jl")
 include("main_mcs.jl")

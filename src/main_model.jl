@@ -7,7 +7,9 @@ using Mimi, CSVFiles, DataFrames, Query, StatsBase, XLSX, Interpolations, Delimi
                 RFFSPsample::Union{Nothing, Int} = nothing,
                 Agriculture_floor_on_damages::Bool = true,
                 Agriculture_ceiling_on_benefits::Bool = false,
-                vsl::Symbol= :epa
+                vsl::Symbol= :epa,
+                temperature_method::Symbol = :fair #can be :fair, :pattern_scaling, :greens_function
+
             )
                 
 Get a GIVE Model with the given argument Settings
@@ -59,6 +61,10 @@ Get a GIVE Model with the given argument Settings
 
 - vsl (default :epa) - specify the soruce of the value of statistical life (VSL) being used in the model
 
+- temperature_method (default :fair) - specify the method for temperature calculation, 
+    can be :fair (use FAIR global temperature), :pattern_scaling (use pattern scaled local temperature, based on FAIR global mean),
+    or :greens_function (use greens function local temperature)
+
 """
 function get_model(; Agriculture_gtap::String = "midDF",
                     socioeconomics_source::Symbol = :RFF,
@@ -66,7 +72,8 @@ function get_model(; Agriculture_gtap::String = "midDF",
                     RFFSPsample::Union{Nothing, Int} = nothing,
                     Agriculture_floor_on_damages::Bool = true,
                     Agriculture_ceiling_on_benefits::Bool = false,
-                    vsl::Symbol= :epa
+                    vsl::Symbol= :epa,
+                    temperature_method::Symbol = :fair #can be :fair, :pattern_scaling, :greens_function
                 )
 
     # --------------------------------------------------------------------------
@@ -168,6 +175,10 @@ function get_model(; Agriculture_gtap::String = "midDF",
 
     set_dimension!(m, :domestic_countries, domestic_countries) # Country ISO3 codes to be accumulated for domestic
 
+    # add green's function dimensions
+    num_cmip6_gcms = 6
+    set_dimension!(m, :cmip6_gcms, 1:num_cmip6_gcms)
+    set_dimension!(m, :lag, 1:90) #TODO: figure out the length, and how to handle past 90 
     # Add Socioeconomics component BEFORE the FAIR model to allow for emissions feedbacks after damages_first year
     if socioeconomics_source == :RFF
         add_comp!(m, MimiRFFSPs.SPs, :Socioeconomic, first = damages_first, before = :ch4_cycle);
@@ -377,10 +388,17 @@ function get_model(; Agriculture_gtap::String = "midDF",
     connect_param!(m, :antarctic_icesheet => :antarctic_ocean_temperature, :antarctic_ocean  => :anto_temperature)
     connect_param!(m, :antarctic_icesheet => :global_sea_level,            :global_sea_level => :sea_level_rise)
 
-    connect_param!(m, :antarctic_icesheet => :global_surface_temperature, :temperature => :T)
-    connect_param!(m, :antarctic_ocean => :global_surface_temperature, :temperature => :T)
-    connect_param!(m, :glaciers_small_icecaps => :global_surface_temperature, :temperature => :T)
-    connect_param!(m, :greenland_icesheet => :global_surface_temperature, :temperature => :T)
+    if temperature_method == :fair || temperature_method == :pattern_scaling
+        connect_param!(m, :antarctic_icesheet => :global_surface_temperature, :temperature => :T)
+        connect_param!(m, :antarctic_ocean => :global_surface_temperature, :temperature => :T)
+        connect_param!(m, :glaciers_small_icecaps => :global_surface_temperature, :temperature => :T)
+        connect_param!(m, :greenland_icesheet => :global_surface_temperature, :temperature => :T)
+    elseif temperature_method == :greens_function
+        connect_param!(m, :antarctic_icesheet => :global_surface_temperature, :TempMortality_GreensFunction => :global_temperature)
+        connect_param!(m, :antarctic_ocean => :global_surface_temperature, :TempMortality_GreensFunction => :global_temperature)
+        connect_param!(m, :glaciers_small_icecaps => :global_surface_temperature, :TempMortality_GreensFunction => :global_temperature)
+        connect_param!(m, :greenland_icesheet => :global_surface_temperature, :TempMortality_GreensFunction => :global_temperature)
+    end
     
     connect_param!(m, :GlobalSLRNorm_1900 => :global_slr, :global_sea_level => :sea_level_rise)
     
@@ -476,22 +494,69 @@ function get_model(; Agriculture_gtap::String = "midDF",
     # TempNorm_1880 - Normalize temperature to deviation from 1880 for Howard and Sterner damage function
     update_param!(m, :TempNorm_1880, :norm_range_start, 1880)
     update_param!(m, :TempNorm_1880, :norm_range_end, 1880)
-    connect_param!(m, :TempNorm_1880 => :global_temperature, :temperature => :T)
-
+    if temperature_method == :fair || temperature_method == :pattern_scaling
+        connect_param!(m, :TempNorm_1880 => :global_temperature, :temperature => :T)
+    elseif temperature_method == :greens_function
+        connect_param!(m, :TempNorm_1880 => :global_temperature, :TempMortality_GreensFunction => :global_temperature)  
+    end
     # TempNorm_1900 - Normalize temperature to deviation from 1900 for DICE2016 damage function
     update_param!(m, :TempNorm_1900, :norm_range_start, 1900)
     update_param!(m, :TempNorm_1900, :norm_range_end, 1900)
-    connect_param!(m, :TempNorm_1900 => :global_temperature, :temperature => :T)
-
+    if temperature_method == :fair || temperature_method == :pattern_scaling
+        connect_param!(m, :TempNorm_1900 => :global_temperature, :temperature => :T)
+    elseif temperature_method == :greens_function
+        connect_param!(m, :TempNorm_1900 => :global_temperature, :TempMortality_GreensFunction => :global_temperature)  
+    end
     # TempNorm_1850to1900 - Normalize temperature to deviation from 1850 to 1900 for IPCC Comparison Graphics
     update_param!(m, :TempNorm_1850to1900, :norm_range_start, 1850)
     update_param!(m, :TempNorm_1850to1900, :norm_range_end, 1900)
-    connect_param!(m, :TempNorm_1850to1900 => :global_temperature, :temperature => :T)
-
+    if temperature_method == :fair || temperature_method == :pattern_scaling
+        connect_param!(m, :TempNorm_1850to1900 => :global_temperature, :temperature => :T)
+    elseif temperature_method == :greens_function
+        connect_param!(m, :TempNorm_1850to1900 => :global_temperature, :TempMortality_GreensFunction => :global_temperature)
+    end
 	# TempNorm_1995to2005 - Normalize temperature to deviation from 1995 to 2005 for Agriculture Component
     update_param!(m, :TempNorm_1995to2005, :norm_range_start, 1995)
     update_param!(m, :TempNorm_1995to2005, :norm_range_end, 2005)
-    connect_param!(m, :TempNorm_1995to2005 => :global_temperature, :temperature => :T)
+    if temperature_method == :fair || temperature_method == :pattern_scaling
+        connect_param!(m, :TempNorm_1995to2005 => :global_temperature, :temperature => :T)
+    elseif temperature_method == :greens_function
+        connect_param!(m, :TempNorm_1995to2005 => :global_temperature, :TempMortality_GreensFunction => :global_temperature)  
+    end
+    # --------------------------------------------------------------------------
+    # Local Temperature for Mortality Components
+    # --------------------------------------------------------------------------
+
+    # Add temperature method-specific Components
+    if temperature_method == :pattern_scaling
+        add_comp!(m, TempMortality_PatternScaling, :TempMortality_PatternScaling, first = damages_first, after = :TempNorm_1995to2005)
+        
+        # Load pattern scaling data if available
+        pattern_file = joinpath(@__DIR__, "..", "data", "pattern_scaling_data.csv")
+        if isfile(pattern_file)
+            pattern_data = load(pattern_file)
+            update_param!(m, :TempMortality_PatternScaling, :pattern, pattern_data)
+        else
+            @warn("Pattern scaling data file not found: $pattern_file")
+        end
+        update_param!(m, :TempMortality_PatternScaling, :gcm_id, 1)
+        
+    elseif temperature_method == :greens_function
+        add_comp!(m, TempMortality_GreensFunction, :TempMortality_GreensFunction, first = damages_first, after = :TempNorm_1995to2005)
+        
+        # Load Green's function data if available
+        local_file = joinpath(@__DIR__, "..", "data", "greens_function_local.csv")
+        
+        if isfile(local_file)
+            local_patterns = load(local_file)
+            update_param!(m, :TempMortality_GreensFunction, :pattern, local_patterns)
+        else
+            @warn("Green's function data files not found: $local_file")
+        end
+        
+        update_param!(m, :TempMortality_GreensFunction, :gcm_id, 1)
+        update_param!(m, :TempMortality_GreensFunction, :dt, 1.0)
+    end
 
     # --------------------------------------------------------------------------
     # Cromar et al. Temperature-Mortality Damages
@@ -529,8 +594,33 @@ function get_model(; Agriculture_gtap::String = "midDF",
     end
 
     connect_param!(m, :CromarMortality => :population,  :Socioeconomic => :population)
-    connect_param!(m, :CromarMortality => :temperature, :temperature => :T)
+    # Connect temperature to mortality component based on method
+    if temperature_method == :fair
+        # Use FAIR global temperature for all regions
+        connect_param!(m, :CromarMortality => :temperature, :temperature => :T)
+        
+    elseif temperature_method == :pattern_scaling
+        # Connect FAIR global temperature to pattern scaling component
+        connect_param!(m, :TempMortality_PatternScaling => :global_temperature, :temperature => :T)
+        # Connect pattern scaling output to mortality
+        connect_param!(m, :CromarMortality => :local_temperature, :TempMortality_PatternScaling => :local_temperature)
+        
+    elseif temperature_method == :greens_function
+        # Connect emissions to Green's function
+        connect_param!(m, :TempMortality_GreensFunction => :forcing, :Socioeconomic => :co2_emissions)
+        # Connect Green's function output to mortality
+        connect_param!(m, :CromarMortality => :local_temperature, :TempMortality_GreensFunction => :local_temperature)
+        
+
+    end    
     connect_param!(m, :CromarMortality => :vsl, :VSL => :vsl)
+
+        # Set temperature method flag for mortality component
+    if temperature_method in [:pattern_scaling, :greens_function]
+        update_param!(m, :CromarMortality, :use_local_temperature, true)
+    else
+        update_param!(m, :CromarMortality, :use_local_temperature, false)
+    end
 
     # --------------------------------------------------------------------------
 	# Agriculture Aggregators
@@ -641,8 +731,14 @@ function get_model(; Agriculture_gtap::String = "midDF",
 
     set_param!(m, :energy_damages, :β_energy, country_β_energy)
     connect_param!(m, :energy_damages => :gdp,         :Socioeconomic => :gdp)
-    connect_param!(m, :energy_damages => :temperature, :temperature => :T)
 
+    if temperature_method == :fair || temperature_method == :pattern_scaling
+        # Use FAIR global temperature for all regions
+        connect_param!(m, :energy_damages => :temperature, :temperature => :T)
+    elseif temperature_method == :greens_function
+        # Use global mean temperature from Green's function
+        connect_param!(m, :energy_damages => :temperature, :TempMortality_GreensFunction => :global_temperature)            
+    end
     # --------------------------------------------------------------------------
     # DICE2016R2 Damages
     # --------------------------------------------------------------------------

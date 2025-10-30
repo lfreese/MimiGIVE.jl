@@ -10,7 +10,8 @@ using Mimi
    	β_mortality             = Parameter(index=[country]) # Coefficient relating global temperature to change in mortality rates.
     baseline_mortality_rate = Parameter(index=[time, country], unit = "deaths/1000 persons/yr") # Crude death rate in a given country (deaths per 1,000 population).
  	temperature             = Parameter(index=[time], unit="degC") # Global average surface temperature anomaly relative to pre-industrial (°C).
-
+    local_temperature       = Parameter(index=[time, country], unit="degC")  # Local temperature (pattern/greens function)
+    
     population              = Parameter(index=[time, country], unit="million") # Population in a given country (millions of persons).
     vsl                     = Parameter(index=[time, country], unit="US\$2005/yr") # Value of a statistical life ($).
 
@@ -25,8 +26,12 @@ using Mimi
         for c in d.country
 
             # Calculate change in a country's baseline mortality rate due to combined effects of heat and cold.
-            v.mortality_change[t,c] = p.β_mortality[c] * p.temperature[t]
-
+            if p.use_local_temperature
+                v.mortality_change[t,c] = p.β_mortality[c] * p.local_temperature[t,c]
+            else
+                v.mortality_change[t,c] = p.β_mortality[c] * p.temperature[t]  # Same global temperature for all countries
+            end
+            
             # Calculate additional deaths per 1,000 population due to cold and heat.
             v.excess_death_rate[t,c] = p.baseline_mortality_rate[t,c] * v.mortality_change[t,c]
 
