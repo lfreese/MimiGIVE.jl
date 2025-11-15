@@ -1,0 +1,17 @@
+  Activating project at `/share/crsp/lab/freesel/share/MimiGIVE.jl`
+Precompiling packages...
+Info Given MimiGIVE was explicitly requested, output will be shown live [0K
+[0K┌ Warning: MCMCDiagnostics.jl has been deprecated in favor of MCMCDiagnosticTools.jl.
+[0K│ (https://github.com/TuringLang/MCMCDiagnosticTools.jl/) and is no longer
+[0K│ maintained.
+[0K└ @ MCMCDiagnostics ~/.julia/packages/MCMCDiagnostics/uVCwA/src/MCMCDiagnostics.jl:4
+  14131.5 ms  ✓ MimiGIVE
+  1 dependency successfully precompiled in 15 seconds. 352 already precompiled.
+  1 dependency had output during precompilation:
+┌ MimiGIVE
+│  [Output was shown above]
+└  
+┌ Warning: MCMCDiagnostics.jl has been deprecated in favor of MCMCDiagnosticTools.jl.
+│ (https://github.com/TuringLang/MCMCDiagnosticTools.jl/) and is no longer
+│ maintained.
+└ @ MCMCDiagnostics ~/.julia/packages/MCMCDiagnostics/uVCwA/src/MCMCDiagnostics.jl:4

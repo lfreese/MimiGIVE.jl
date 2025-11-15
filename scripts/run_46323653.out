@@ -1,0 +1,55 @@
+
+Testing all three temperature methods...
+
+=== Test 3: Green's Functions Method ===
+Creating Green's functions model...
+DEBUG: About to call get_model with :greens_function
+DEBUG: Model created successfully, about to run...
+Running Green's functions model...
+=== TempMortality_GreensFunction INIT ===
+  Number of timesteps: 551
+  Number of countries: 184
+  Number of lags: 600
+  GCM ID: 1
+  dt: 1.0
+  Pattern array size: (184, 1, 600)
+  Global pattern array size: (1, 600)
+  Sample pattern values [country 1, gcm 1, lags 1-5]: Union{Missing, Float64}[0.0, 0.0, 0.0, 0.0, 0.0]
+  Sample global pattern values [gcm 1, lags 1-5]: Union{Missing, Float64}[0.17925945102525595, 0.36691924337978793, 0.5677122755081099, 0.7245750416425533, 0.9162225158917294]
+=== INIT COMPLETE ===
+
+Year 1750 (idx=1): global_temp = 0.015007449407079411 °C
+✗ Green's functions failed: MissingException("Cannot get index; data is missing. You may have tried to access a value in timestep 1 that has not yet been computed.")
+DEBUG: Error type: MissingException
+DEBUG: Full stack trace:
+MissingException: Cannot get index; data is missing. You may have tried to access a value in timestep 1 that has not yet been computed.
+Stacktrace:
+  [1] _missing_data_check(data::Missing, t::Int64)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/time_arrays.jl:36
+  [2] getindex
+    @ ~/.julia/packages/Mimi/ve6WQ/src/core/time_arrays.jl:173 [inlined]
+  [3] macro expansion
+    @ /share/crsp/lab/freesel/share/MimiGIVE.jl/src/components/OceanHeatAccumulator.jl:18 [inlined]
+  [4] run_timestep_MimiGIVE_OceanHeatAccumulator(p::Mimi.ComponentInstanceParameters{@NamedTuple{del_ohc::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}, v::Mimi.ComponentInstanceVariables{@NamedTuple{del_ohc_accum::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}, d::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}}, t::Mimi.FixedTimestep{1750, 1, 2300})
+    @ MimiGIVE ~/.julia/packages/Mimi/ve6WQ/src/core/defcomp.jl:16
+  [5] run_timestep(ci::Mimi.LeafComponentInstance{Mimi.ComponentInstanceVariables{@NamedTuple{del_ohc_accum::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}, Mimi.ComponentInstanceParameters{@NamedTuple{del_ohc::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}}, clock::Mimi.Clock{Mimi.FixedTimestep}, dims::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}})
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:317
+  [6] run_timestep(cci::Mimi.ModelInstance, clock::Mimi.Clock{Mimi.FixedTimestep}, dims::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}})
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:326
+  [7] run(mi::Mimi.ModelInstance, ntimesteps::Int64, dimkeys::Nothing)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:366
+  [8] run(m::Model; ntimesteps::Int64, rebuild::Bool, dim_keys::Nothing)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/model.jl:539
+  [9] run(m::Model)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/model.jl:527
+ [10] top-level scope
+    @ /share/crsp/lab/freesel/share/MimiGIVE.jl/scripts/test_gf.jl:27
+ [11] include(mod::Module, _path::String)
+    @ Base ./Base.jl:306
+ [12] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:317
+ [13] _start()
+    @ Base ./client.jl:550
+
+=== Summary ===
+Tested all three temperature methods.

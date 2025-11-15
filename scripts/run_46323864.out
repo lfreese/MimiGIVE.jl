@@ -1,0 +1,232 @@
+
+Testing all three temperature methods...
+
+=== Test 3: Green's Functions Method ===
+Creating Green's functions model...
+DEBUG: About to call get_model with :greens_function
+DEBUG: Model created successfully, about to run...
+Running Green's functions model...
+=== TempMortality_GreensFunction INIT ===
+  Number of timesteps: 551
+  Number of countries: 184
+  Number of lags: 600
+  GCM ID: 1
+  dt: 1.0
+  Pattern array size: (184, 1, 600)
+  Global pattern array size: (1, 600)
+  Sample pattern values [country 1, gcm 1, lags 1-5]: Union{Missing, Float64}[0.0, 0.0, 0.0, 0.0, 0.0]
+  Sample global pattern values [gcm 1, lags 1-5]: Union{Missing, Float64}[0.17925945102525595, 0.36691924337978793, 0.5677122755081099, 0.7245750416425533, 0.9162225158917294]
+=== INIT COMPLETE ===
+
+Year 1750 (idx=1): global_temp = 0.015007449407079411 °C
+Year 1751 (idx=2): global_temp = 0.04599317872550135 °C
+Year 1752 (idx=3): global_temp = 0.09434189378193655 °C
+Year 1753 (idx=4): global_temp = 0.15668566565108183 °C
+Year 1754 (idx=5): global_temp = 0.2361868321956911 °C
+Year 1755 (idx=6): global_temp = 0.32675208633732333 °C
+Year 1756 (idx=7): global_temp = 0.42471910003390156 °C
+Year 1757 (idx=8): global_temp = 0.5275380700988646 °C
+Year 1758 (idx=9): global_temp = 0.6288626112481565 °C
+Year 1759 (idx=10): global_temp = 0.7226222497283681 °C
+Year 1851: del_ohc = 3.1095279756562924e21
+Year 1852: del_ohc = 2.8199791098713924e21
+Year 1853: del_ohc = 1.1592324473639452e21
+Year 1854: del_ohc = -4.8750684454220464e20
+Year 1855: del_ohc = 5.162856827945522e20
+Year 1856: del_ohc = 1.7030701322556505e21
+Year 1857: del_ohc = 3.822680234462422e20
+Year 1858: del_ohc = 5.245663527643349e20
+Year 1859: del_ohc = 2.5256813004700826e21
+Year 1860: del_ohc = 3.2839001239596806e21
+Year 1861: del_ohc = 2.6783492219363865e21
+Year 1862: del_ohc = -4.291026489684241e21
+Year 1863: del_ohc = -6.283982138344766e21
+Year 1864: del_ohc = 1.7714564007569297e20
+Year 1865: del_ohc = 3.4681004395107435e21
+Year 1866: del_ohc = 4.1390404943114283e21
+Year 1867: del_ohc = 3.985014900231447e21
+Year 1868: del_ohc = 3.765604121450487e21
+Year 1869: del_ohc = 3.690026194495901e21
+Year 1870: del_ohc = 3.554912610506972e21
+Year 1871: del_ohc = 3.4037347932039576e21
+Year 1872: del_ohc = 3.1592345930665584e21
+Year 1873: del_ohc = 9.974411354261823e20
+Year 1874: del_ohc = 4.7818433925217334e20
+Year 1875: del_ohc = 1.75388691990784e21
+Year 1876: del_ohc = 1.8170123888654877e21
+Year 1877: del_ohc = 2.1860420123346692e21
+Year 1878: del_ohc = 2.5456742560166964e21
+Year 1879: del_ohc = 2.578813621829776e21
+Year 1880: del_ohc = 2.2417557080572455e21
+Year 1881: del_ohc = 2.109925536866886e21
+Year 1882: del_ohc = 2.6083127264129093e21
+Year 1883: del_ohc = -2.601616635762257e21
+Year 1884: del_ohc = -1.7920120400487324e22
+Year 1885: del_ohc = -1.5625837812901277e22
+Year 1886: del_ohc = 3.677263786531929e19
+Year 1887: del_ohc = 4.4352988185835633e21
+Year 1888: del_ohc = 5.480383351039134e21
+Year 1889: del_ohc = 6.258959937700223e21
+Year 1890: del_ohc = 4.3926842907001734e21
+Year 1891: del_ohc = 1.6349456942630723e21
+Year 1892: del_ohc = 2.3602493780686345e21
+Year 1893: del_ohc = 4.92972172435807e21
+Year 1894: del_ohc = 5.658088218660116e21
+Year 1895: del_ohc = 5.057679779327235e21
+Year 1896: del_ohc = 4.226806044607345e21
+Year 1897: del_ohc = 3.5846212242723685e21
+Year 1898: del_ohc = 3.204353846577869e21
+Year 1899: del_ohc = 2.915330164531918e21
+Year 1900: del_ohc = 2.6993135584416597e21
+Year 1901: del_ohc = 2.5589845589067846e21
+Year 1902: del_ohc = 7.265128220784461e20
+Year 1903: del_ohc = -5.971735537775921e21
+Year 1904: del_ohc = -5.993908176932184e21
+Year 1905: del_ohc = 1.3967521273848256e21
+Year 1906: del_ohc = 4.925799246704103e21
+Year 1907: del_ohc = 3.983901818668817e21
+Year 1908: del_ohc = 3.373333489984734e21
+Year 1909: del_ohc = 4.494321183887459e21
+Year 1910: del_ohc = 4.4103987449006014e21
+Year 1911: del_ohc = 3.9188081628227767e21
+Year 1912: del_ohc = -8.955058475312582e20
+Year 1913: del_ohc = -3.9709501689468394e21
+Year 1914: del_ohc = 1.1603195733456439e20
+Year 1915: del_ohc = 4.3307594680850684e21
+Year 1916: del_ohc = 5.839018265432553e21
+Year 1917: del_ohc = 5.82560846701696e21
+Year 1918: del_ohc = 5.566524221467765e21
+Year 1919: del_ohc = 5.184222501195596e21
+Year 1920: del_ohc = 4.52677802378927e21
+Year 1921: del_ohc = 4.109745240645599e21
+Year 1922: del_ohc = 2.8393909097041043e21
+Year 1923: del_ohc = 2.1396011427875182e21
+Year 1924: del_ohc = 3.306158115646462e21
+Year 1925: del_ohc = 4.0835844340871673e21
+Year 1926: del_ohc = 4.334314996327728e21
+Year 1927: del_ohc = 4.52951744918571e21
+Year 1928: del_ohc = 4.134310516600382e21
+Year 1929: del_ohc = 2.173472443948405e21
+Year 1930: del_ohc = 2.8212275169616383e21
+Year 1931: del_ohc = 4.6999217191467053e21
+Year 1932: del_ohc = 3.172511979161054e21
+Year 1933: del_ohc = 2.9894777956334295e21
+Year 1934: del_ohc = 4.35379912572664e21
+Year 1935: del_ohc = 4.6741625248845576e21
+Year 1936: del_ohc = 5.078562991149231e21
+Year 1937: del_ohc = 5.239735030563333e21
+Year 1938: del_ohc = 5.057662755870154e21
+Year 1939: del_ohc = 4.914384109143252e21
+Year 1940: del_ohc = 4.521760826312987e21
+Year 1941: del_ohc = 4.1109228080259536e21
+Year 1942: del_ohc = 3.8836309537299995e21
+Year 1943: del_ohc = 3.723727810175998e21
+Year 1944: del_ohc = 3.819122605550366e21
+Year 1945: del_ohc = 4.4637363700188976e21
+Year 1946: del_ohc = 5.061317045780811e21
+Year 1947: del_ohc = 5.344843012454059e21
+Year 1948: del_ohc = 5.547720556096503e21
+Year 1949: del_ohc = 5.485722707507903e21
+Year 1950: del_ohc = 4.993871449953017e21
+Year 1951: del_ohc = 4.255943278418918e21
+Year 1952: del_ohc = 4.005647493970359e21
+Year 1953: del_ohc = 4.139191149154268e21
+Year 1954: del_ohc = 4.332140438085425e21
+Year 1955: del_ohc = 4.6897514282890423e21
+Year 1956: del_ohc = 5.388635798260138e21
+Year 1957: del_ohc = 6.307210033752713e21
+Year 1958: del_ohc = 6.754891855521288e21
+Year 1959: del_ohc = 6.45298845289865e21
+Year 1960: del_ohc = 5.955972449848003e21
+Year 1961: del_ohc = 5.07439692815904e21
+Year 1962: del_ohc = 2.886764490767066e21
+Year 1963: del_ohc = -4.981738401755784e21
+Year 1964: del_ohc = -7.946341211204184e21
+Year 1965: del_ohc = -1.7503547814785924e21
+Year 1966: del_ohc = 5.226674733063926e21
+Year 1967: del_ohc = 6.990216445896078e21
+Year 1968: del_ohc = 6.183250968085983e21
+Year 1969: del_ohc = 7.747176601413994e21
+Year 1970: del_ohc = 8.118073302136407e21
+Year 1971: del_ohc = 6.715762419363134e21
+Year 1972: del_ohc = 6.621286262572492e21
+Year 1973: del_ohc = 8.304993927535836e21
+Year 1974: del_ohc = 7.875912303083472e21
+Year 1975: del_ohc = 5.214081188979622e21
+Year 1976: del_ohc = 5.925594781088642e21
+Year 1977: del_ohc = 9.039092120945612e21
+Year 1978: del_ohc = 1.0532464211891807e22
+Year 1979: del_ohc = 1.1140274771565342e22
+Year 1980: del_ohc = 1.0734359687874229e22
+Year 1981: del_ohc = 1.0204827820706427e22
+Year 1982: del_ohc = 7.323934345331366e21
+Year 1983: del_ohc = 1.5993831439610937e21
+Year 1984: del_ohc = 2.72287480925746e21
+Year 1985: del_ohc = 8.724016409403134e21
+Year 1986: del_ohc = 1.0773744590074036e22
+Year 1987: del_ohc = 1.1432506961071964e22
+Year 1988: del_ohc = 1.2775588748433115e22
+Year 1989: del_ohc = 1.4040649822537213e22
+Year 1990: del_ohc = 1.4312173958690257e22
+Year 1991: del_ohc = 8.554019382390301e21
+Year 1992: del_ohc = -5.363135915210297e21
+Year 1993: del_ohc = -4.484326924807833e21
+Year 1994: del_ohc = 9.866204102289036e21
+Year 1995: del_ohc = 1.6192086761692295e22
+Year 1996: del_ohc = 1.695425329473534e22
+Year 1997: del_ohc = 1.6723966572825869e22
+Year 1998: del_ohc = 1.6749805351392609e22
+Year 1999: del_ohc = 1.6918779892279175e22
+Year 2000: del_ohc = 1.6789354165228248e22
+Year 2001: del_ohc = 1.6236074913808154e22
+Year 2002: del_ohc = 1.5822762158165932e22
+Year 2003: del_ohc = 1.4995339303094013e22
+Year 2004: del_ohc = 1.4092995008190533e22
+Year 2005: del_ohc = 1.3530298300593389e22
+Year 2006: del_ohc = 1.308787689239572e22
+Year 2007: del_ohc = 1.3173083756007468e22
+Year 2008: del_ohc = 1.3648808525232236e22
+Year 2009: del_ohc = 1.4002053433216868e22
+Year 2010: del_ohc = 1.470080697715792e22
+Year 2011: del_ohc = 1.5313495885990318e22
+Year 2012: del_ohc = 1.57730637368195e22
+Year 2013: del_ohc = 1.6519961828852731e22
+Year 2014: del_ohc = 1.6774762671582025e22
+Year 2015: del_ohc = 1.6748323214522736e22
+Year 2016: del_ohc = 1.6725581668922031e22
+✗ Green's functions failed: DomainError(-1.934840111275928e7, "Exponentiation yielding a complex result requires a complex argument.\nReplace x^y with (x+0im)^y, Complex(x)^y, or similar.")
+DEBUG: Error type: DomainError
+DEBUG: Full stack trace:
+DomainError with -1.934840111275928e7:
+Exponentiation yielding a complex result requires a complex argument.
+Replace x^y with (x+0im)^y, Complex(x)^y, or similar.
+Stacktrace:
+  [1] throw_exp_domainerror(x::Float64)
+    @ Base.Math ./math.jl:41
+  [2] ^
+    @ ./math.jl:1155 [inlined]
+  [3] macro expansion
+    @ ~/.julia/packages/MimiBRICK/bpCAF/src/components/antarctic_icesheet_component.jl:141 [inlined]
+  [4] run_timestep_MimiBRICK_antarctic_icesheet(p::Mimi.ComponentInstanceParameters{@NamedTuple{seawater_freeze::Mimi.ScalarModelParameter{Float64}, ais_ρ_ice::Mimi.ScalarModelParameter{Float64}, ais_ρ_seawater::Mimi.ScalarModelParameter{Float64}, ais_ρ_rock::Mimi.ScalarModelParameter{Float64}, ais_sea_level₀::Mimi.ScalarModelParameter{Float64}, ais_ocean_temperature₀::Mimi.ScalarModelParameter{Float64}, ais_radius₀::Mimi.ScalarModelParameter{Float64}, ais_bedheight₀::Mimi.ScalarModelParameter{Float64}, ais_slope::Mimi.ScalarModelParameter{Float64}, ais_μ::Mimi.ScalarModelParameter{Float64}, ais_runoffline_snowheight₀::Mimi.ScalarModelParameter{Float64}, ais_c::Mimi.ScalarModelParameter{Float64}, ais_precipitation₀::Mimi.ScalarModelParameter{Float64}, ais_κ::Mimi.ScalarModelParameter{Float64}, ais_ν::Mimi.ScalarModelParameter{Float64}, ais_iceflow₀::Mimi.ScalarModelParameter{Float64}, ais_γ::Mimi.ScalarModelParameter{Float64}, ais_α::Mimi.ScalarModelParameter{Float64}, ais_temperature_coefficient::Mimi.ScalarModelParameter{Float64}, ais_temperature_intercept::Mimi.ScalarModelParameter{Float64}, ais_local_fingerprint::Mimi.ScalarModelParameter{Float64}, ocean_surface_area::Mimi.ScalarModelParameter{Float64}, temperature_threshold::Mimi.ScalarModelParameter{Float64}, λ::Mimi.ScalarModelParameter{Float64}, include_ais_DSL::Mimi.ScalarModelParameter{Bool}, global_surface_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, antarctic_ocean_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, global_sea_level::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}, v::Mimi.ComponentInstanceVariables{@NamedTuple{Δ_sea_level::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, antartic_surface_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, runoffline_snowheight::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, precipitation::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ais_β::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, center2runoffline_distance::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, center2sea_distance::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ais_radius::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, waterdepth::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ice_flux::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ais_volume::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, β_total::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, disintegration_rate::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, disintegration_volume::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ais_sea_level::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}, d::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}}, t::Mimi.FixedTimestep{1850, 1, 2300})
+    @ MimiBRICK ~/.julia/packages/Mimi/ve6WQ/src/core/defcomp.jl:78
+  [5] run_timestep(ci::Mimi.LeafComponentInstance{Mimi.ComponentInstanceVariables{@NamedTuple{Δ_sea_level::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, antartic_surface_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, runoffline_snowheight::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, precipitation::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ais_β::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, center2runoffline_distance::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, center2sea_distance::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ais_radius::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, waterdepth::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ice_flux::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ais_volume::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, β_total::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, disintegration_rate::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, disintegration_volume::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, ais_sea_level::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}, Mimi.ComponentInstanceParameters{@NamedTuple{seawater_freeze::Mimi.ScalarModelParameter{Float64}, ais_ρ_ice::Mimi.ScalarModelParameter{Float64}, ais_ρ_seawater::Mimi.ScalarModelParameter{Float64}, ais_ρ_rock::Mimi.ScalarModelParameter{Float64}, ais_sea_level₀::Mimi.ScalarModelParameter{Float64}, ais_ocean_temperature₀::Mimi.ScalarModelParameter{Float64}, ais_radius₀::Mimi.ScalarModelParameter{Float64}, ais_bedheight₀::Mimi.ScalarModelParameter{Float64}, ais_slope::Mimi.ScalarModelParameter{Float64}, ais_μ::Mimi.ScalarModelParameter{Float64}, ais_runoffline_snowheight₀::Mimi.ScalarModelParameter{Float64}, ais_c::Mimi.ScalarModelParameter{Float64}, ais_precipitation₀::Mimi.ScalarModelParameter{Float64}, ais_κ::Mimi.ScalarModelParameter{Float64}, ais_ν::Mimi.ScalarModelParameter{Float64}, ais_iceflow₀::Mimi.ScalarModelParameter{Float64}, ais_γ::Mimi.ScalarModelParameter{Float64}, ais_α::Mimi.ScalarModelParameter{Float64}, ais_temperature_coefficient::Mimi.ScalarModelParameter{Float64}, ais_temperature_intercept::Mimi.ScalarModelParameter{Float64}, ais_local_fingerprint::Mimi.ScalarModelParameter{Float64}, ocean_surface_area::Mimi.ScalarModelParameter{Float64}, temperature_threshold::Mimi.ScalarModelParameter{Float64}, λ::Mimi.ScalarModelParameter{Float64}, include_ais_DSL::Mimi.ScalarModelParameter{Bool}, global_surface_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, antarctic_ocean_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, global_sea_level::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}}, clock::Mimi.Clock{Mimi.FixedTimestep}, dims::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}})
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:317
+  [6] run_timestep(cci::Mimi.ModelInstance, clock::Mimi.Clock{Mimi.FixedTimestep}, dims::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}})
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:326
+  [7] run(mi::Mimi.ModelInstance, ntimesteps::Int64, dimkeys::Nothing)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:366
+  [8] run(m::Model; ntimesteps::Int64, rebuild::Bool, dim_keys::Nothing)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/model.jl:539
+  [9] run(m::Model)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/model.jl:527
+ [10] top-level scope
+    @ /share/crsp/lab/freesel/share/MimiGIVE.jl/scripts/test_gf.jl:27
+ [11] include(mod::Module, _path::String)
+    @ Base ./Base.jl:306
+ [12] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:317
+ [13] _start()
+    @ Base ./client.jl:550
+
+=== Summary ===
+Tested all three temperature methods.

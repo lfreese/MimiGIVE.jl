@@ -1,0 +1,36 @@
+
+Testing all three temperature methods...
+
+=== Test 2: Pattern Scaling Method ===
+Creating pattern scaling model...
+Running pattern scaling model...
+✓ Pattern scaling model successful!
+
+=== Examining Pattern Scaling Temperature Output ===
+
+Global temperature statistics:
+  Min: -0.9311960789405753
+  Max: 4.6921018220693504
+  Mean: 1.9196296704243954
+
+Sample global temperature values:
+  1750-1754: Union{Missing, Float64}[0.0053671258205, 0.034542956270567825, 0.05476786166582169, 0.06704750086607812, 0.07287957676225716]
+  1850-1854: Union{Missing, Float64}[0.07749513663757268, 0.09000765493948741, 0.09949908377843866, 0.09610351765535771, 0.08118930696869439]
+  2020-2024: Union{Missing, Float64}[1.6629681381592691, 1.6903046759750797, 1.7192481730974982, 1.7486309004885052, 1.776670849690923]
+
+Local temperature for country 1:
+  1750-1754: Union{Missing, Float64}[missing, missing, missing, missing, missing]
+  1850-1854: Union{Missing, Float64}[missing, missing, missing, missing, missing]
+  2020-2024: Union{Missing, Float64}[0.0, 0.0, 0.0, 0.0, 0.0]
+
+Pattern scaling mortality costs sample:
+3×3 DataFrame
+ Row │ time   country  mortality_costs
+     │ Int64  String   Float64?
+─────┼─────────────────────────────────
+   1 │  2020  ABW            0.0
+   2 │  2020  AFG            2.43564e8
+   3 │  2020  AGO            4.07878e8
+
+=== Summary ===
+Tested all three temperature methods.

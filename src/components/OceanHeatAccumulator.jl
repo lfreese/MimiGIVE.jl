@@ -15,8 +15,11 @@ using Mimi
         # divides by 1e22 so it can be re-scaled again in the BRICK TE component.
         if is_first(t)
             v.del_ohc_accum[t] = 0. # FAIR won't provide del_ohc for first period so leave at 0.
+
         else
+            
             v.del_ohc_accum[t] = v.del_ohc_accum[t-1] + (p.del_ohc[t] ./ 1e22)
+            println("Year $(gettime(t)): del_ohc = $(p.del_ohc[t])")
         end
     end
 end

@@ -206,7 +206,7 @@ function get_model(; Agriculture_gtap::String = "midDF",
     add_comp!(m, GlobalTempNorm, :TempNorm_1995to2005, after = :TempNorm_1850to1900); # Agriculture
 
     # Add Ocean Heat Accumulator to Link FAIR and BRICK
-    add_comp!(m, OceanHeatAccumulator, after = :TempNorm_1995to2005);
+    add_comp!(m, OceanHeatAccumulator, first = brick_first, after = :TempNorm_1995to2005); ## have to make it so the time is correct.
 
     # Add BRICK components
     add_comp!(m, MimiBRICK.antarctic_ocean, first = brick_first, after = :OceanHeatAccumulator);
@@ -295,6 +295,89 @@ function get_model(; Agriculture_gtap::String = "midDF",
 	# Component-Specific Parameters and Connections
     # --------------------------------------------------------------------------
 
+     # --------------------------------------------------------------------------
+    # Local Temperature for Mortality Components
+    # --------------------------------------------------------------------------
+
+    if temperature_method == :pattern_scaling
+        # Load pattern scaling data first to get dimensions
+        pattern_file = joinpath(@__DIR__, "..", "data", "pattern_scaling_data.csv")
+        if isfile(pattern_file)
+            pattern_data = DataFrame(load(pattern_file))
+            
+            # Get unique GCMs from the data
+            unique_gcms = unique(pattern_data.gcm)
+            
+            # Set up the cmip6_gcms dimension
+            set_dimension!(m, :cmip6_gcms, unique_gcms)
+            
+            # Add the component after setting dimensions
+            add_comp!(m, TempMortality_PatternScaling, :TempMortality_PatternScaling, first = damages_first, after = :TempNorm_1995to2005)
+            
+            # Create the pattern matrix: [country, gcm] -> scaling_factor
+            pattern_matrix = zeros(length(countries), length(unique_gcms))
+            
+            for row in eachrow(pattern_data)
+                country_idx = findfirst(c -> c == row.country, countries)
+                gcm_idx = findfirst(g -> g == row.gcm, unique_gcms)
+                if !isnothing(country_idx) && !isnothing(gcm_idx)
+                    pattern_matrix[country_idx, gcm_idx] = row.scaling_factor
+                end
+            end
+
+            update_param!(m, :TempMortality_PatternScaling, :pattern, pattern_matrix)
+            update_param!(m, :TempMortality_PatternScaling, :gcm_id, 1)
+        else
+            @warn("Pattern scaling data file not found: $pattern_file")
+        end   
+    
+    elseif temperature_method == :greens_function
+            # Load Green's function data first to get dimensions
+        local_file = joinpath(@__DIR__, "..", "data", "greens_function_local.csv")
+        
+        if isfile(local_file)
+            local_patterns = DataFrame(load(local_file))
+            
+            # Set up required dimensions
+            unique_gcms = unique(local_patterns.gcm) 
+            max_lag = maximum(local_patterns.lag)    
+            
+            set_dimension!(m, :cmip6_gcms, unique_gcms)
+            set_dimension!(m, :lag, 1:max_lag)
+            
+            # Add the component after setting dimensions
+            add_comp!(m, TempMortality_GreensFunction, :TempMortality_GreensFunction, first = model_first, after = :TempNorm_1995to2005)
+            
+            # Create proper 3D pattern matrix: [country, gcm, lag]
+            pattern_3d = zeros(length(countries), length(unique_gcms), max_lag)
+            global_pattern_2d = zeros(length(unique_gcms), max_lag)
+            
+            # Fill matrices based on data structure
+            for row in eachrow(local_patterns)
+                country_idx = findfirst(c -> c == row.country, countries)
+                gcm_idx = findfirst(g -> g == row.gcm, unique_gcms)
+                lag_idx = row.lag
+                if !isnothing(country_idx) && !isnothing(gcm_idx)
+                    pattern_3d[country_idx, gcm_idx, lag_idx] = row.value
+                    global_pattern_2d[gcm_idx, lag_idx] = row.global_pattern
+                end
+            end
+            
+            update_param!(m, :TempMortality_GreensFunction, :pattern, pattern_3d)
+            update_param!(m, :TempMortality_GreensFunction, :global_pattern, global_pattern_2d)
+        else
+            @warn("Green's function data files not found: $local_file")
+           
+        end
+        
+        update_param!(m, :TempMortality_GreensFunction, :gcm_id, 1)
+        update_param!(m, :TempMortality_GreensFunction, :dt, 1.0)
+        
+        # Connect the same CO2 emissions that force FAIR
+        connect_param!(m, :TempMortality_GreensFunction => :forcing, :co2_emissions_identity => :output_co2)
+    end
+
+    
     # --------------------------------------------------------------------------    
     # BRICK
     # --------------------------------------------------------------------------
@@ -523,41 +606,7 @@ function get_model(; Agriculture_gtap::String = "midDF",
     elseif temperature_method == :greens_function
         connect_param!(m, :TempNorm_1995to2005 => :global_temperature, :TempMortality_GreensFunction => :global_temperature)  
     end
-    # --------------------------------------------------------------------------
-    # Local Temperature for Mortality Components
-    # --------------------------------------------------------------------------
-
-    # Add temperature method-specific Components
-    if temperature_method == :pattern_scaling
-        add_comp!(m, TempMortality_PatternScaling, :TempMortality_PatternScaling, first = damages_first, after = :TempNorm_1995to2005)
-        
-        # Load pattern scaling data if available
-        pattern_file = joinpath(@__DIR__, "..", "data", "pattern_scaling_data.csv")
-        if isfile(pattern_file)
-            pattern_data = load(pattern_file)
-            update_param!(m, :TempMortality_PatternScaling, :pattern, pattern_data)
-        else
-            @warn("Pattern scaling data file not found: $pattern_file")
-        end
-        update_param!(m, :TempMortality_PatternScaling, :gcm_id, 1)
-        
-    elseif temperature_method == :greens_function
-        add_comp!(m, TempMortality_GreensFunction, :TempMortality_GreensFunction, first = damages_first, after = :TempNorm_1995to2005)
-        
-        # Load Green's function data if available
-        local_file = joinpath(@__DIR__, "..", "data", "greens_function_local.csv")
-        
-        if isfile(local_file)
-            local_patterns = load(local_file)
-            update_param!(m, :TempMortality_GreensFunction, :pattern, local_patterns)
-        else
-            @warn("Green's function data files not found: $local_file")
-        end
-        
-        update_param!(m, :TempMortality_GreensFunction, :gcm_id, 1)
-        update_param!(m, :TempMortality_GreensFunction, :dt, 1.0)
-    end
-
+   
     # --------------------------------------------------------------------------
     # Cromar et al. Temperature-Mortality Damages
     # --------------------------------------------------------------------------
@@ -598,23 +647,27 @@ function get_model(; Agriculture_gtap::String = "midDF",
     if temperature_method == :fair
         # Use FAIR global temperature for all regions
         connect_param!(m, :CromarMortality => :temperature, :temperature => :T)
-        
+        # Set dummy local_temperature since it won't be used (use_local_temperature = false)
+        dummy_local_temp = zeros(length(model_first:model_last), length(countries))
+        update_param!(m, :CromarMortality, :local_temperature, dummy_local_temp)
+
+        #connect_param!(m, :CromarMortality => :local_temperature, :temperature => :dummy_local_temp)
+
     elseif temperature_method == :pattern_scaling
         # Connect FAIR global temperature to pattern scaling component
         connect_param!(m, :TempMortality_PatternScaling => :global_temperature, :temperature => :T)
         # Connect pattern scaling output to mortality
         connect_param!(m, :CromarMortality => :local_temperature, :TempMortality_PatternScaling => :local_temperature)
-        
+        connect_param!(m, :CromarMortality => :temperature, :temperature => :T)
+
     elseif temperature_method == :greens_function
-        # Connect emissions to Green's function
-        connect_param!(m, :TempMortality_GreensFunction => :forcing, :Socioeconomic => :co2_emissions)
         # Connect Green's function output to mortality
         connect_param!(m, :CromarMortality => :local_temperature, :TempMortality_GreensFunction => :local_temperature)
-        
+        # Connect global temperature to mortality (CromarMortality needs both)
+        connect_param!(m, :CromarMortality => :temperature, :TempMortality_GreensFunction => :global_temperature)
 
     end    
     connect_param!(m, :CromarMortality => :vsl, :VSL => :vsl)
-
         # Set temperature method flag for mortality component
     if temperature_method in [:pattern_scaling, :greens_function]
         update_param!(m, :CromarMortality, :use_local_temperature, true)

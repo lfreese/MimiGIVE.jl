@@ -11,7 +11,7 @@ using Mimi
     baseline_mortality_rate = Parameter(index=[time, country], unit = "deaths/1000 persons/yr") # Crude death rate in a given country (deaths per 1,000 population).
  	temperature             = Parameter(index=[time], unit="degC") # Global average surface temperature anomaly relative to pre-industrial (°C).
     local_temperature       = Parameter(index=[time, country], unit="degC")  # Local temperature (pattern/greens function)
-    
+    use_local_temperature   = Parameter{Bool}() # Boolean flag for whether to use local or global temperatures
     population              = Parameter(index=[time, country], unit="million") # Population in a given country (millions of persons).
     vsl                     = Parameter(index=[time, country], unit="US\$2005/yr") # Value of a statistical life ($).
 

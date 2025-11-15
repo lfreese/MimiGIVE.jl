@@ -1,0 +1,31 @@
+
+Testing all three temperature methods...
+
+=== Test 2: Pattern Scaling Method ===
+Creating pattern scaling model...
+Running pattern scaling model...
+✓ Pattern scaling model successful!
+
+=== Examining Pattern Scaling Temperature Output ===
+✗ Pattern scaling failed: ErrorException("base_temperature is not a parameter or a variable in component ComponentPath(Symbol(\"##ModelDef#279\"), :TempMortality_PatternScaling).")
+Full error:
+base_temperature is not a parameter or a variable in component ComponentPath(Symbol("##ModelDef#279"), :TempMortality_PatternScaling).
+Stacktrace:
+ [1] error(s::String)
+   @ Base ./error.jl:44
+ [2] _get_datum(ci::Mimi.LeafComponentInstance{Mimi.ComponentInstanceVariables{@NamedTuple{local_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 2, 1, SubArray{Union{Missing, Float64}, 2, Matrix{Union{Missing, Float64}}, Tuple{UnitRange{Int64}, Base.Slice{Base.OneTo{Int64}}}, false}}}}, Mimi.ComponentInstanceParameters{@NamedTuple{gcm_id::Mimi.ScalarModelParameter{Int64}, pattern::Matrix{Union{Missing, Float64}}, global_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}}}}, datum_name::Symbol)
+   @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:213
+ [3] getindex(obj::Mimi.ModelInstance, comp_name::Symbol, datum::Symbol)
+   @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:238
+ [4] getindex(m::Model, comp_name::Symbol, datum_name::Symbol)
+   @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/delegate.jl:55
+ [5] top-level scope
+   @ /share/crsp/lab/freesel/share/MimiGIVE.jl/scripts/test_ps.jl:71
+ [6] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [7] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [8] _start()
+   @ Base ./client.jl:550
+=== Summary ===
+Tested all three temperature methods.

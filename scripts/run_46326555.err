@@ -1,0 +1,5 @@
+  Activating project at `/share/crsp/lab/freesel/share/MimiGIVE.jl`
+┌ Warning: MCMCDiagnostics.jl has been deprecated in favor of MCMCDiagnosticTools.jl.
+│ (https://github.com/TuringLang/MCMCDiagnosticTools.jl/) and is no longer
+│ maintained.
+└ @ MCMCDiagnostics ~/.julia/packages/MCMCDiagnostics/uVCwA/src/MCMCDiagnostics.jl:4

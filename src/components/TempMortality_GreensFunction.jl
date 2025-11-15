@@ -9,59 +9,108 @@ using Mimi
 # Also calculates global mean temperature for use by other damage modules.
 # ------------------------------------------------------------------------------
 
+using Mimi
+
+using Mimi
+
 @defcomp TempMortality_GreensFunction begin
 
     country = Index()
     cmip6_gcms = Index()
-    lag = Index() # convolution kernel lag (1 = current timestep, 2 = previous timestep, ...)
+    lag = Index()
 
-    gcm_id             = Parameter{Int64}(default = 5) # the pattern gcm id to use, default to ** ##TODO determine default
-    # Green's function kernel: indexed by country, gcm and lag.
-    # pattern[c, gcm, 1] is the response at the same timestep to an impulse at that timestep,
-    # pattern[...,2] is the response one timestep later to an impulse at the previous timestep, etc.
-    # Units: e.g. degC per (unit of forcing). For emissions forcing in GtC/yr, use degC per GtC and set dt accordingly.
+    gcm_id             = Parameter{Int64}(default = 5)
     pattern            = Parameter(index=[country, cmip6_gcms, lag])
-    # Forcing time series to convolve with the Green's Function (e.g., CO2 emissions, same time index as `time`).
     forcing            = Parameter(index=[time])
-    # Timestep width to multiply the discrete sum by (default 1.0 for yearly data). Set appropriately if your
-    # time axis has a different spacing.
-    dt                 = Parameter(default = 1.0)
-    
-    # Global mean Green's function kernel for calculating global temperature
-    # Units: degC per (unit of forcing), same as local pattern
+    dt                 = Parameter{Float64}(default = 1.0)
     global_pattern     = Parameter(index=[cmip6_gcms, lag])
 
-    local_temperature = Variable(index=[time,country], unit = "degC") # Country-level temperatures derived from the convolution.
-    global_temperature = Variable(index=[time], unit = "degC") # Global mean temperature derived from the convolution.
-
-    function run_timestep(p, v, d, t)
-        # Calculate local temperatures for each country
-        for c in d.country
-            acc = 0.0
-            for L in d.lag
-                # Map lag L (1-based) to a source time index s: lag=1 -> s = t (current timestep);
-                # lag=2 -> s = t-1 (previous), etc.
-                s = t - (L - 1)
-                # Skip kernel terms that reference times before the start of the series
-                # or that are not present in the model's time index (works with non-integer time indices).
-                if !(s in d.time)
-                    continue
-                end
-                # Discrete convolution: sum G(lag) * forcing[s] * dt
-                acc += p.pattern[c, p.gcm_id, L] * p.forcing[s] * p.dt
+    local_temperature  = Variable(index=[time, country], unit = "degC")
+    global_temperature = Variable(index=[time], unit = "degC")
+    
+    function init(p, v, d)
+        # Initialize all temperature values to 0.0 to avoid missing values
+        println("=== TempMortality_GreensFunction INIT ===")
+        println("  Number of timesteps: $(length(d.time))")
+        println("  Number of countries: $(length(d.country))")
+        println("  Number of lags: $(length(d.lag))")
+        println("  GCM ID: $(p.gcm_id)")
+        println("  dt: $(p.dt)")
+        
+        # Check pattern dimensions and sample values
+        println("  Pattern array size: $(size(p.pattern))")
+        println("  Global pattern array size: $(size(p.global_pattern))")
+        println("  Sample pattern values [country 1, gcm $(p.gcm_id), lags 1-5]: $(p.pattern[1, p.gcm_id, 1:min(5, length(d.lag))])")
+        println("  Sample global pattern values [gcm $(p.gcm_id), lags 1-5]: $(p.global_pattern[p.gcm_id, 1:min(5, length(d.lag))])")
+        
+        for t in d.time
+            v.global_temperature[t] = 0.0
+            for c in d.country
+                v.local_temperature[t, c] = 0.0
             end
-            v.local_temperature[t,c] = acc
+        end
+        println("=== INIT COMPLETE ===\n")
+    end
+    
+    function run_timestep(p, v, d, t)
+        current_idx = findfirst(ts -> ts == t, d.time)
+        year = gettime(t)
+        
+        # Convert CO2 emissions from Gt CO2 to GtC (molecular weight ratio: C=12, CO2=44)
+        CO2_TO_C = 12.0 / 44.0
+        
+        # Calculate global mean temperature first
+        global_temp = 0.0
+        
+        for L in d.lag
+            source_idx = current_idx - (L - 1)
+            
+            if source_idx >= 1
+                forcing_val = p.forcing[TimestepIndex(source_idx)]
+                forcing_clean = ismissing(forcing_val) ? 0.0 : Float64(forcing_val)
+                forcing_clean *= CO2_TO_C  # Convert to GtC
+                contribution = p.global_pattern[p.gcm_id, L] * forcing_clean * p.dt
+                global_temp += contribution
+            end
         end
         
-        # Calculate global mean temperature
-        global_acc = 0.0
-        for L in d.lag
-            s = t - (L - 1)
-            if !(s in d.time)
-                continue
+        v.global_temperature[t] = global_temp
+        
+        # Debug output for first few timesteps and any extreme values
+        if current_idx <= 10 || abs(global_temp) > 200.0
+            println("Year $year (idx=$current_idx): global_temp = $global_temp °C")
+            if abs(global_temp) > 200.0
+                println("  WARNING: Extreme temperature detected!")
+                println("  Examining contributions:")
+                for L in 1:min(10, length(d.lag))
+                    source_idx = current_idx - (L - 1)
+                    if source_idx >= 1
+                        forcing_val = p.forcing[TimestepIndex(source_idx)]
+                        forcing_clean = ismissing(forcing_val) ? 0.0 : Float64(forcing_val)
+                        forcing_clean *= CO2_TO_C  # Convert to GtC
+                        contribution = p.global_pattern[p.gcm_id, L] * forcing_clean * p.dt
+                        println("    Lag $L: forcing=$forcing_clean, pattern=$(p.global_pattern[p.gcm_id, L]), contrib=$contribution")
+                    end
+                end
             end
-            global_acc += p.global_pattern[p.gcm_id, L] * p.forcing[s] * p.dt
         end
-        v.global_temperature[t] = global_acc
+        
+        # Calculate local temperatures for each country
+        for c in d.country
+            local_temp = 0.0
+            
+            for L in d.lag
+                source_idx = current_idx - (L - 1)
+                
+                if source_idx >= 1
+                    forcing_val = p.forcing[TimestepIndex(source_idx)]
+                    forcing_clean = ismissing(forcing_val) ? 0.0 : Float64(forcing_val)
+                    forcing_clean *= CO2_TO_C  # Convert to GtC
+                    local_temp += p.pattern[c, p.gcm_id, L] * forcing_clean * p.dt
+                end
+            end
+            
+            v.local_temperature[t, c] = local_temp
+        end
     end
 end

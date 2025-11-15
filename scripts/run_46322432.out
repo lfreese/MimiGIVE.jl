@@ -1,0 +1,57 @@
+
+Testing all three temperature methods...
+
+=== Test 3: Green's Functions Method ===
+Creating Green's functions model...
+DEBUG: About to call get_model with :greens_function
+DEBUG: Model created successfully, about to run...
+Running Green's functions model...
+✗ Green's functions failed: MethodError(convert, (Float64, missing), 0x0000000000009818)
+DEBUG: Error type: MethodError
+DEBUG: Full stack trace:
+MethodError: Cannot `convert` an object of type Missing to an object of type Float64
+The function `convert` exists, but no method is defined for this combination of argument types.
+
+Closest candidates are:
+  convert(::Type{Float64}, !Matched::DoubleFloats.Double64)
+   @ DoubleFloats ~/.julia/packages/DoubleFloats/Jz7Sc/src/type/convert.jl:9
+  convert(::Type{T}, !Matched::DoubleFloats.DoubleFloat{DoubleFloats.DoubleFloat{T}}) where T<:Union{Float16, Float32, Float64}
+   @ DoubleFloats ~/.julia/packages/DoubleFloats/Jz7Sc/src/type/convert.jl:41
+  convert(::Type{T}, !Matched::Mimi.ScalarModelParameter{T}) where T
+   @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/types/params.jl:46
+  ...
+
+Stacktrace:
+  [1] setproperty!(x::Mimi.ScalarModelParameter{Float64}, f::Symbol, v::Missing)
+    @ Base ./Base_compiler.jl:57
+  [2] setproperty!
+    @ ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:68 [inlined]
+  [3] macro expansion
+    @ /share/crsp/lab/freesel/share/MimiGIVE.jl/src/components/GlobalTempNorm.jl:20 [inlined]
+  [4] run_timestep_MimiGIVE_GlobalTempNorm(p::Mimi.ComponentInstanceParameters{@NamedTuple{global_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, norm_range_start::Mimi.ScalarModelParameter{Float64}, norm_range_end::Mimi.ScalarModelParameter{Float64}}}, v::Mimi.ComponentInstanceVariables{@NamedTuple{global_temperature_norm::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, global_temperature_norm_range_mean::Mimi.ScalarModelParameter{Float64}}}, d::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}}, t::Mimi.FixedTimestep{1750, 1, 2300})
+    @ MimiGIVE ~/.julia/packages/Mimi/ve6WQ/src/core/defcomp.jl:18
+  [5] run_timestep(ci::Mimi.LeafComponentInstance{Mimi.ComponentInstanceVariables{@NamedTuple{global_temperature_norm::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, global_temperature_norm_range_mean::Mimi.ScalarModelParameter{Float64}}}, Mimi.ComponentInstanceParameters{@NamedTuple{global_temperature::Mimi.TimestepArray{Mimi.FixedTimestep{1750, 1, 2300}, Union{Missing, Float64}, 1, 1, SubArray{Union{Missing, Float64}, 1, Vector{Union{Missing, Float64}}, Tuple{UnitRange{Int64}}, true}}, norm_range_start::Mimi.ScalarModelParameter{Float64}, norm_range_end::Mimi.ScalarModelParameter{Float64}}}}, clock::Mimi.Clock{Mimi.FixedTimestep}, dims::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}})
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:317
+  [6] run_timestep(cci::Mimi.ModelInstance, clock::Mimi.Clock{Mimi.FixedTimestep}, dims::@NamedTuple{time::Vector{Mimi.AbstractTimestep}, other_ghg::Vector{Int64}, ozone_depleting_substances::Vector{Int64}, var"4"::Vector{Int64}, var"2"::Vector{Int64}, country::Vector{Int64}, fund_regions::Vector{Int64}, segments::Vector{Int64}, ag_mapping_input_regions::Vector{Int64}, ag_mapping_output_regions::Vector{Int64}, energy_countries::Vector{Int64}, domestic_countries::Vector{Int64}, cmip6_gcms::Vector{Int64}, lag::Vector{Int64}, var"3"::Vector{Int64}})
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:326
+  [7] run(mi::Mimi.ModelInstance, ntimesteps::Int64, dimkeys::Nothing)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/instances.jl:366
+  [8] run(m::Model; ntimesteps::Int64, rebuild::Bool, dim_keys::Nothing)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/model.jl:539
+  [9] run(m::Model)
+    @ Mimi ~/.julia/packages/Mimi/ve6WQ/src/core/model.jl:527
+ [10] top-level scope
+    @ /share/crsp/lab/freesel/share/MimiGIVE.jl/scripts/test_gf.jl:27
+ [11] include(mod::Module, _path::String)
+    @ Base ./Base.jl:306
+ [12] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:317
+ [13] _start()
+    @ Base ./client.jl:550
+DEBUG: MethodError details:
+  Function: convert
+  Arguments: (Float64, missing)
+  Argument types: (DataType, Missing)
+
+=== Summary ===
+Tested all three temperature methods.
