@@ -45,7 +45,10 @@ function get_mcs(trials;
                     rffsp_sampling::Symbol = :random,
                     rffsp_sampling_ids::Union{Vector{Int}, Nothing} = nothing,
                     save_list::Vector = [],
-                    Agriculture_gtap::String = "midDF"         
+                    Agriculture_gtap::String = "midDF",
+                    sample_gcm::Bool = false,
+                    m::Union{Mimi.Model, Nothing} = nothing,
+
         )
 
     # check some argument conditions
@@ -279,6 +282,19 @@ function get_mcs(trials;
     # check if we've added all FAIR parameters
     isempty(fair_samples_left) ? nothing : error("The following FAIR mcs uncertain parameters has not been added to the simulation: $(keys(fair_samples_left))")
     
+     # Add GCM sampling if using multi-model patterns/greens functions
+    if sample_gcm
+        # If model provided, extract GCM dimension from it
+        if !isnothing(m) && :TempMortality_GreensFunction in Mimi.compdefs(m)
+            gcm_dim = dim_keys(m, :cmip6_gcms)
+            n_gcms = length(gcm_dim)
+            add_RV!(mcs, :gcm_id_rv, EmpiricalDistribution(collect(gcm_dim)))
+            add_transform!(mcs, :TempMortality_GreensFunction, :gcm_id, :(=), :gcm_id_rv)
+        else
+            error("Cannot sample GCMs: model not provided and data file not found")
+        end
+    end
+
     # add the requested saved variables 
     for i in save_list
         add_save!(mcs, i)
@@ -337,6 +353,7 @@ function run_mcs(;trials::Int64 = 10000,
                     m::Mimi.Model = get_model(), 
                     save_list::Vector = [],
                     results_in_memory::Bool = true,
+                    sample_gcm::Bool = false,
                 )
 
     m = deepcopy(m) # in the case that an `m` was provided, be careful that we don't modify the original
@@ -367,7 +384,9 @@ function run_mcs(;trials::Int64 = 10000,
                     rffsp_sampling = rffsp_sampling,
                     rffsp_sampling_ids = rffsp_sampling_ids,
                     save_list = save_list,
-                    Agriculture_gtap = Agriculture_gtap
+                    Agriculture_gtap = Agriculture_gtap,
+                    sample_gcm = sample_gcm,
+                    m = m
                 )
 
     # run monte carlo trials

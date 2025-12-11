@@ -73,8 +73,9 @@ function get_model(; Agriculture_gtap::String = "midDF",
                     Agriculture_floor_on_damages::Bool = true,
                     Agriculture_ceiling_on_benefits::Bool = false,
                     vsl::Symbol= :epa,
-                    temperature_method::Symbol = :fair #can be :fair, :pattern_scaling, :greens_function
-                )
+                    temperature_method::Symbol = :fair, #can be :fair, :pattern_scaling, :greens_function
+                    use_multimodel::Bool = false #choose if we use multiple models for pattern and greens function
+                    )
 
     # --------------------------------------------------------------------------
     # MODEL - Check Arguments
@@ -332,45 +333,55 @@ function get_model(; Agriculture_gtap::String = "midDF",
         end   
     
     elseif temperature_method == :greens_function
-            # Load Green's function data first to get dimensions
-        local_file = joinpath(@__DIR__, "..", "data", "greens_function_local.csv")
+        println("DEBUG: Entering greens_function branch")
         
-        if isfile(local_file)
-            local_patterns = DataFrame(load(local_file))
-            
-            # Set up required dimensions
-            unique_gcms = unique(local_patterns.gcm) 
-            max_lag = maximum(local_patterns.lag)    
-            
-            set_dimension!(m, :cmip6_gcms, unique_gcms)
-            set_dimension!(m, :lag, 1:max_lag)
-            
-            # Add the component after setting dimensions
-            add_comp!(m, TempMortality_GreensFunction, :TempMortality_GreensFunction, first = model_first, after = :TempNorm_1995to2005)
-            
-            # Create proper 3D pattern matrix: [country, gcm, lag]
-            pattern_3d = zeros(length(countries), length(unique_gcms), max_lag)
-            global_pattern_2d = zeros(length(unique_gcms), max_lag)
-            
-            # Fill matrices based on data structure
-            for row in eachrow(local_patterns)
-                country_idx = findfirst(c -> c == row.country, countries)
-                gcm_idx = findfirst(g -> g == row.gcm, unique_gcms)
-                lag_idx = row.lag
-                if !isnothing(country_idx) && !isnothing(gcm_idx)
-                    pattern_3d[country_idx, gcm_idx, lag_idx] = row.value
-                    global_pattern_2d[gcm_idx, lag_idx] = row.global_pattern
-                end
-            end
-            
-            update_param!(m, :TempMortality_GreensFunction, :pattern, pattern_3d)
-            update_param!(m, :TempMortality_GreensFunction, :global_pattern, global_pattern_2d)
+        # Load Green's function data first to get dimensions
+        local_file = if use_multimodel
+            joinpath(@__DIR__, "..", "data", "greens_function_local_multimodel.csv")
         else
-            @warn("Green's function data files not found: $local_file")
-           
+            joinpath(@__DIR__, "..", "data", "greens_function_local.csv")
         end
         
-        update_param!(m, :TempMortality_GreensFunction, :gcm_id, 1)
+        println("DEBUG: Looking for file: $local_file")
+        println("DEBUG: File exists: ", isfile(local_file))
+        
+        if !isfile(local_file)
+            error("Green's function data file not found: $local_file")
+        end
+
+        local_patterns = DataFrame(load(local_file))
+        println("DEBUG: Loaded $(nrow(local_patterns)) rows from data file")
+        
+        
+        # Set up required dimensions
+        unique_gcms = unique(local_patterns.gcm) 
+        max_lag = maximum(local_patterns.lag)    
+        
+        set_dimension!(m, :cmip6_gcms, unique_gcms)
+        set_dimension!(m, :lag, 1:max_lag)
+        
+        # Add the component after setting dimensions
+        add_comp!(m, TempMortality_GreensFunction, :TempMortality_GreensFunction, first = model_first, after = :TempNorm_1995to2005)
+        
+        # Create proper 3D pattern matrix: [country, gcm, lag]
+        pattern_3d = zeros(length(countries), length(unique_gcms), max_lag)
+        global_pattern_2d = zeros(length(unique_gcms), max_lag)
+        
+        # Fill matrices based on data structure
+        for row in eachrow(local_patterns)
+            country_idx = findfirst(c -> c == row.country, countries)
+            gcm_idx = findfirst(g -> g == row.gcm, unique_gcms)
+            lag_idx = row.lag
+            if !isnothing(country_idx) && !isnothing(gcm_idx)
+                pattern_3d[country_idx, gcm_idx, lag_idx] = row.value
+                global_pattern_2d[gcm_idx, lag_idx] = row.global_pattern
+            end
+        end
+            
+        update_param!(m, :TempMortality_GreensFunction, :pattern, pattern_3d)
+        update_param!(m, :TempMortality_GreensFunction, :global_pattern, global_pattern_2d)
+  
+        update_param!(m, :TempMortality_GreensFunction, :gcm_id, 1) #default to 1, varies if MCS
         update_param!(m, :TempMortality_GreensFunction, :dt, 1.0)
         
         # Connect the same CO2 emissions that force FAIR

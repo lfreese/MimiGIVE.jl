@@ -1,85 +1,82 @@
 using Pkg
-Pkg.activate(joinpath(@__DIR__, ".."))
+Pkg.activate("/data/homezvol1/freesel/crsp/MimiGIVE.jl")
 
-# Auto-accept data dependency downloads
-ENV["DATADEPS_ALWAYS_ACCEPT"] = "true"
-
-using Mimi, DataFrames, Query, CSV
-
-# the local MimiGIVE since it's already activated
 using MimiGIVE
+using Statistics
+using DataFrames
+using Mimi
 
-println("\nTesting all three temperature methods...")
+using MimiGIVE: get_model, compute_scc, compute_scghg
 
-# Test 3: Green's Functions
-println("\n=== Test 3: Green's Functions Method ===")
-println("Creating Green's functions model...")
-println("DEBUG: About to call get_model with :greens_function")
+using Pkg
+Pkg.activate("/data/homezvol1/freesel/crsp/MimiGIVE.jl")
 
-try
-    println("Creating Green's functions model...")
-    println("DEBUG: About to call get_model with :greens_function")
-    flush(stdout)  # Ensure output is shown immediately
+function test_gf_mcs()
+    println("\n=== Testing Green's Function MCS ===\n")
     
-    m_gf = MimiGIVE.get_model(temperature_method = :greens_function)
+    # Test 1: Single model - verify component works
+    println("Test 1: Single model Green's function")
+    m_single = get_model(temperature_method = :greens_function, use_multimodel = false)
     
-    # Fixed debug lines - use Mimi.first_period
-    println("\nDEBUG: Checking component timesteps...")
-    println("  TempMortality_GreensFunction first: ", Mimi.first_period(Mimi.compdef(m_gf, :TempMortality_GreensFunction)))
-    println("  OceanHeatAccumulator first: ", Mimi.first_period(Mimi.compdef(m_gf, :OceanHeatAccumulator)))
-    println("  antarctic_icesheet first: ", Mimi.first_period(Mimi.compdef(m_gf, :antarctic_icesheet)))
-    println("  global_sea_level first: ", Mimi.first_period(Mimi.compdef(m_gf, :global_sea_level)))
-
-    println("DEBUG: Model created successfully, about to run...")
-    flush(stdout)
-
-    # Check parameter connections
-    println("\nDEBUG: Checking parameter connections...")
+    # Check component exists
     try
-        gsl_conn = Mimi.get_connection(m_gf.md, :antarctic_icesheet, :global_sea_level)
-        println("  antarctic_icesheet.global_sea_level connected to: ", gsl_conn)
+        comp = Mimi.compdef(m_single.md, :TempMortality_GreensFunction)
+        println("  ✓ TempMortality_GreensFunction component exists")
     catch e
-        println("  Cannot get connection info: $e")
+        error("TempMortality_GreensFunction component missing from model")
     end
     
-    println("Running Green's functions model...")
-    run(m_gf)
-    println("✓ Green's functions model successful!")
+    # Run single model
+    println("  Running single model...")
+    run(m_single)
+    global_temp_single = m_single[:TempMortality_GreensFunction, :global_temperature]
+    println("  ✓ Model ran successfully")
+    println("  Temperature range: $(round(global_temp_single[1], digits=3))°C to $(round(global_temp_single[end], digits=2))°C")
     
-    # Try to get output
+    # Test 2: Multimodel - check dimensions
+    println("\nTest 2: Multimodel setup")
+    m_multi = get_model(temperature_method = :greens_function, use_multimodel = true)
+    
     try
-        df_gf = getdataframe(m_gf, :CromarMortality, :mortality_costs) |> @filter(_.time >= 2020) |> DataFrame
-        println("Green's functions mortality costs sample:")
-        println(first(df_gf, 3))
+        comp = Mimi.compdef(m_multi.md, :TempMortality_GreensFunction)
+        println("  ✓ TempMortality_GreensFunction component exists in multimodel")
     catch e
-        println("Could not extract Green's functions data: $e")
-        println("DEBUG: Error details: $(typeof(e))")
-        println("DEBUG: Stack trace:")
-        for (exc, bt) in Base.catch_stack()
-            showerror(stdout, exc, bt)
-            println()
+        error("TempMortality_GreensFunction component missing from multimodel")
+    end
+    
+    # Run multimodel
+    println("  Running multimodel...")
+    run(m_multi)
+    global_temp_multi = m_multi[:TempMortality_GreensFunction, :global_temperature]
+    println("  ✓ Multimodel ran successfully")
+    println("  Global temp array size: $(size(global_temp_multi))")
+    
+    # Check array dimensions
+    if ndims(global_temp_multi) >= 2
+        println("  Array has $(ndims(global_temp_multi)) dimensions")
+        
+        # Try to extract data for different GCMs if available
+        if size(global_temp_multi, ndims(global_temp_multi)) > 1
+            n_gcms = size(global_temp_multi, ndims(global_temp_multi))
+            println("  Number of GCMs in array: $n_gcms")
+            
+            # Show final temps for first few GCMs
+            println("  Final year temperatures by GCM:")
+            for i in 1:min(5, n_gcms)
+                if ndims(global_temp_multi) == 2
+                    temp = global_temp_multi[end, i]
+                elseif ndims(global_temp_multi) == 3
+                    temp = mean(global_temp_multi[end, :, i])
+                else
+                    temp = global_temp_multi[end]
+                end
+                println("    GCM $i: $(round(temp, digits=2))°C")
+            end
         end
     end
     
-catch e
-    println("✗ Green's functions failed: $e")
-    println("DEBUG: Error type: $(typeof(e))")
-    
-    # Print full stack trace for debugging
-    println("DEBUG: Full stack trace:")
-    for (exc, bt) in Base.catch_stack()
-        showerror(stdout, exc, bt)
-        println()
-    end
-    
-    # Try to get more specific error information
-    if isa(e, MethodError)
-        println("DEBUG: MethodError details:")
-        println("  Function: $(e.f)")
-        println("  Arguments: $(e.args)")
-        println("  Argument types: $(typeof.(e.args))")
-    end
+    println("\n=== All tests completed successfully! ===\n")
 end
 
-println("\n=== Summary ===")
-println("Tested all three temperature methods.")
+# Run the tests
+test_gf_mcs()
