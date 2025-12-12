@@ -282,17 +282,11 @@ function get_mcs(trials;
     # check if we've added all FAIR parameters
     isempty(fair_samples_left) ? nothing : error("The following FAIR mcs uncertain parameters has not been added to the simulation: $(keys(fair_samples_left))")
     
-     # Add GCM sampling if using multi-model patterns/greens functions
+    # GCM sampling
     if sample_gcm
-        # If model provided, extract GCM dimension from it
-        if !isnothing(m) && :TempMortality_GreensFunction in Mimi.compdefs(m)
-            gcm_dim = dim_keys(m, :cmip6_gcms)
-            n_gcms = length(gcm_dim)
-            add_RV!(mcs, :gcm_id_rv, EmpiricalDistribution(collect(gcm_dim)))
-            add_transform!(mcs, :TempMortality_GreensFunction, :gcm_id, :(=), :gcm_id_rv)
-        else
-            error("Cannot sample GCMs: model not provided and data file not found")
-        end
+        gcm_dim = dim_keys(m, :cmip6_gcms)
+        add_RV!(mcs, :gcm_id_rv, DiscreteUniform(1, length(gcm_dim)))
+        add_transform!(mcs, :TempMortality_GreensFunction, :gcm_id, :(=), :gcm_id_rv)
     end
 
     # add the requested saved variables 

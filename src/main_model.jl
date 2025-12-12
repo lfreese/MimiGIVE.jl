@@ -74,7 +74,6 @@ function get_model(; Agriculture_gtap::String = "midDF",
                     Agriculture_ceiling_on_benefits::Bool = false,
                     vsl::Symbol= :epa,
                     temperature_method::Symbol = :fair, #can be :fair, :pattern_scaling, :greens_function
-                    use_multimodel::Bool = false #choose if we use multiple models for pattern and greens function
                     )
 
     # --------------------------------------------------------------------------
@@ -336,11 +335,7 @@ function get_model(; Agriculture_gtap::String = "midDF",
         println("DEBUG: Entering greens_function branch")
         
         # Load Green's function data first to get dimensions
-        local_file = if use_multimodel
-            joinpath(@__DIR__, "..", "data", "greens_function_local_multimodel.csv")
-        else
-            joinpath(@__DIR__, "..", "data", "greens_function_local.csv")
-        end
+        local_file = joinpath(@__DIR__, "..", "data", "greens_function_local_multimodel.csv")
         
         println("DEBUG: Looking for file: $local_file")
         println("DEBUG: File exists: ", isfile(local_file))

@@ -84,7 +84,8 @@ function compute_scc(m::Model = get_model();
             CIAM_foresight::Symbol = :perfect,
             CIAM_GDPcap::Bool = false,
             post_mcs_creation_function = nothing,
-            pulse_size::Float64 = 1.
+            pulse_size::Float64 = 1.,
+            sample_gcm::Bool = false
         )
 
     hfc_list = [:HFC23, :HFC32, :HFC43_10, :HFC125, :HFC134a, :HFC143a, :HFC227ea, :HFC245fa]
@@ -897,7 +898,9 @@ function _compute_scc_mcs(mm::MarginalModel,
                     rffsp_sampling = rffsp_sampling,
                     rffsp_sampling_ids = rffsp_sampling_ids,
                     save_list = save_list,
-                    Agriculture_gtap = Agriculture_gtap
+                    Agriculture_gtap = Agriculture_gtap,
+                    m = mm.base,
+                    sample_gcm = sample_gcm
                 )
     
     if post_mcs_creation_function!==nothing
